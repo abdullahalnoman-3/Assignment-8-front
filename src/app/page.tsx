@@ -113,37 +113,129 @@ export default function HomePage() {
 
   return (
     <div className="space-y-24 py-12">
-      {/* 1. Hero Section */}
-      <section className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center max-w-5xl mx-auto pt-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-6">
-          <Sparkles className="w-3.5 h-3.5" />
-          Community Action & Volunteer Coordination
-        </div>
+      {/* 1. Hero Section with Banner Photo */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Column: Headline, Description & CTAs */}
+          <div className="lg:col-span-7 text-center lg:text-left space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              Community Action & Volunteer Coordination
+            </div>
 
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white max-w-4xl leading-tight">
-          Make a Difference with{' '}
-          <span className="text-emerald-600 dark:text-emerald-400">Social Events Platform (SEP)</span>
-        </h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-[1.15]">
+              Make a Difference with{' '}
+              <span className="text-emerald-600 dark:text-emerald-400">
+                Social Events Platform (SEP)
+              </span>
+            </h1>
 
-        <p className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-          Join thousands of volunteers participating in environmental campaigns, health camps, winter relief, and humanitarian community activities across Bangladesh.
-        </p>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Join thousands of passionate volunteers across Bangladesh participating in environmental cleanups, healthcare camps, winter warmth distribution, and emergency humanitarian relief.
+            </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/events"
-            className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-lg shadow-emerald-600/20 transition flex items-center gap-2"
-          >
-            <Calendar className="w-4 h-4" />
-            Browse Upcoming Events
-          </Link>
-          <Link
-            href="/register"
-            className="px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium transition flex items-center gap-2"
-          >
-            <Users className="w-4 h-4" />
-            Become a Volunteer
-          </Link>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+              <Link
+                href="/events"
+                className="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-lg shadow-emerald-600/25 transition flex items-center gap-2"
+              >
+                <Calendar className="w-4 h-4" />
+                Browse Upcoming Events
+              </Link>
+              <Link
+                href="/register"
+                className="px-6 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold text-sm text-gray-800 dark:text-gray-200 transition flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                Become a Volunteer
+              </Link>
+            </div>
+
+            {/* Quick Impact Stats */}
+            <div className="pt-6 border-t border-gray-200 dark:border-gray-800 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                  5,000+
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                  Volunteers
+                </p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+                  120+
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                  Drives Hosted
+                </p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+                  64
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                  Districts Covered
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Hero Banner Image & Floating Badges */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              {/* Decorative Backdrop Glow */}
+              <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl blur-2xl opacity-20 dark:opacity-30 pointer-events-none" />
+
+              {/* Main Banner Photo */}
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800 bg-gray-100 dark:bg-gray-800 aspect-[4/3] sm:aspect-[16/11]">
+                <img
+                  src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80"
+                  alt="Volunteers coming together in community solidarity"
+                  className="w-full h-full object-cover transform hover:scale-105 transition duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/60 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/80 backdrop-blur-md uppercase tracking-wider">
+                    Community Action
+                  </span>
+                  <p className="text-sm font-medium mt-1 text-white/95">
+                    Youth volunteers uniting for social good in Bangladesh
+                  </p>
+                </div>
+              </div>
+
+              {/* Floating Badge 1 (Top Left) */}
+              <div className="absolute -top-4 -left-4 sm:-top-5 sm:-left-5 bg-white dark:bg-gray-900 p-3 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
+                <div className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-bold text-gray-900 dark:text-white leading-tight">
+                    Active Drives
+                  </p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                    Live across Bangladesh
+                  </p>
+                </div>
+              </div>
+
+              {/* Floating Badge 2 (Bottom Right) */}
+              <div className="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 bg-white dark:bg-gray-900 p-3 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <HeartHandshake className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-bold text-gray-900 dark:text-white leading-tight">
+                    100% Non-Profit
+                  </p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                    Community Supported
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

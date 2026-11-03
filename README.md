@@ -101,3 +101,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📄 License
 This project was developed for educational purposes as part of Assignment 8.
+
