@@ -1,12 +1,16 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { fetchApi } from '@/lib/api';
+import { EventCard, EventCardSkeleton, EventData } from '@/components/EventCard';
 import {
-  HeartHandshake,
   Calendar,
   Users,
   Sparkles,
   Camera,
   MapPin,
-  Tag,
+  ArrowRight,
 } from 'lucide-react';
 
 const GALLERY_ITEMS = [
@@ -61,10 +65,31 @@ const GALLERY_ITEMS = [
 ];
 
 export default function HomePage() {
+  const [recentEvents, setRecentEvents] = useState<EventData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchRecentEvents = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchApi<{ success: boolean; data: EventData[] }>('/events/recent');
+        if (res && res.success) {
+          setRecentEvents(res.data || []);
+        }
+      } catch (error) {
+        setRecentEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentEvents();
+  }, []);
+
   return (
-    <div className="space-y-20 py-12">
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center max-w-5xl mx-auto">
+    <div className="space-y-24 py-12">
+      {/* 1. Hero Section */}
+      <section className="flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center max-w-5xl mx-auto pt-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-6">
           <Sparkles className="w-3.5 h-3.5" />
           Community Action & Volunteer Coordination
@@ -95,6 +120,52 @@ export default function HomePage() {
             Become a Volunteer
           </Link>
         </div>
+      </section>
+
+      {/* 3. Recent Events Grid Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-2">
+              <Calendar className="w-3.5 h-3.5" />
+              Upcoming Opportunities
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Recent & Upcoming Events
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Join immediate community drives and volunteer opportunities in your area.
+            </p>
+          </div>
+
+          <Link
+            href="/events"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 transition"
+          >
+            <span>View All Events</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <EventCardSkeleton key={n} />
+            ))}
+          </div>
+        ) : recentEvents.length === 0 ? (
+          <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              No upcoming events found right now. Check back soon!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recentEvents.map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 4. Gallery Section */}
