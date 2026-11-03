@@ -22,3 +22,4 @@ app.prepare().then(() => {
     console.log(`> Frontend server ready on port ${port}`);
   });
 });
+
