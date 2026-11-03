@@ -15,6 +15,10 @@ import {
   Mail,
   Send,
   CheckCircle2,
+  Search,
+  HeartHandshake,
+  PlusCircle,
+  CalendarCheck,
 } from 'lucide-react';
 
 const GALLERY_ITEMS = [
@@ -140,6 +144,72 @@ export default function HomePage() {
             <Users className="w-4 h-4" />
             Become a Volunteer
           </Link>
+        </div>
+      </section>
+
+      {/* 2. Feature Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            Core Platform Features
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Designed for Social Impact
+          </h2>
+          <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            Empowering passionate volunteers and local organizers to connect, mobilize, and create meaningful positive change across communities.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-5">
+              <Search className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              Smart Live Search
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              Quickly find campaigns by category pills, city location, or keyword with real-time instant filtering.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-5">
+              <HeartHandshake className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              1-Click Enrollment
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              Register as an active volunteer with a single click, instant confirmations, and real-time counter updates.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition">
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-5">
+              <PlusCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              Host Social Drives
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              Create and promote charitable initiatives with strict future-date validation and custom categories.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-5">
+              <CalendarCheck className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              Timeline & Manage
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              Track your joined volunteer timeline chronologically and manage your own organized events safely.
+            </p>
+          </div>
         </div>
       </section>
 

@@ -165,107 +165,120 @@ export const Navbar: React.FC = () => {
 
             {/* 3 & 4. User Logged-in Profile with Hover Name & Dropdown */}
             {user ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="flex items-center gap-3">
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                    className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-emerald-500/30 transition group relative"
+                    title={user.name}
+                    aria-label="User Profile Menu"
+                  >
+                    <div className="w-10 h-10 rounded-full ring-2 ring-emerald-500/40 p-0.5 overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                      <img
+                        src={
+                          user.image ||
+                          `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+                            user.name
+                          )}`
+                        }
+                        alt={user.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+
+                    {/* Hover Tooltip showing user display name */}
+                    <div className="absolute right-0 top-12 hidden group-hover:flex flex-col items-center z-50 pointer-events-none">
+                      <div className="bg-gray-900 text-white text-xs font-medium py-1.5 px-3 rounded-lg shadow-lg whitespace-nowrap">
+                        {user.name}
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Dropdown Menu on Photo Click */}
+                  {profileDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white dark:bg-gray-900 shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                          {user.name}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <div className="py-1">
+                        <Link
+                          href="/profile"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                        >
+                          <UserIcon className="w-4 h-4 text-emerald-500" />
+                          <span>My Profile</span>
+                        </Link>
+
+                        <Link
+                          href="/all-events"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                        >
+                          <Layers className="w-4 h-4 text-emerald-500" />
+                          <span>All Events</span>
+                        </Link>
+
+                        <Link
+                          href="/create-event"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                        >
+                          <PlusCircle className="w-4 h-4 text-emerald-500" />
+                          <span>Create Event</span>
+                        </Link>
+
+                        <Link
+                          href="/manage-events"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-emerald-500" />
+                          <span>Manage Events</span>
+                        </Link>
+
+                        <Link
+                          href="/joined-events"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                        >
+                          <CalendarCheck className="w-4 h-4 text-emerald-500" />
+                          <span>Joined Events</span>
+                        </Link>
+                      </div>
+
+                      <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Direct Visible Logout Button for examiners */}
                 <button
                   type="button"
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-emerald-500/30 transition group relative"
-                  title={user.name}
-                  aria-label="User Profile Menu"
+                  onClick={handleSignOut}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-xl transition"
+                  title="Sign Out"
                 >
-                  <div className="w-10 h-10 rounded-full ring-2 ring-emerald-500/40 p-0.5 overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                    <img
-                      src={
-                        user.image ||
-                        `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-                          user.name
-                        )}`
-                      }
-                      alt={user.name}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  </div>
-                  <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
-
-                  {/* Hover Tooltip showing user name */}
-                  <div className="absolute right-0 top-12 hidden group-hover:flex flex-col items-center z-50 pointer-events-none">
-                    <div className="bg-gray-900 text-white text-xs font-medium py-1.5 px-3 rounded-lg shadow-lg whitespace-nowrap">
-                      {user.name}
-                    </div>
-                  </div>
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Logout</span>
                 </button>
-
-                {/* 4. Dropdown Menu on Photo Click */}
-                {profileDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white dark:bg-gray-900 shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                        {user.name}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {user.email}
-                      </p>
-                    </div>
-
-                    <div className="py-1">
-                      <Link
-                        href="/profile"
-                        onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
-                      >
-                        <UserIcon className="w-4 h-4 text-emerald-500" />
-                        <span>My Profile</span>
-                      </Link>
-
-                      <Link
-                        href="/all-events"
-                        onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
-                      >
-                        <Layers className="w-4 h-4 text-emerald-500" />
-                        <span>All Events</span>
-                      </Link>
-
-                      <Link
-                        href="/create-event"
-                        onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
-                      >
-                        <PlusCircle className="w-4 h-4 text-emerald-500" />
-                        <span>Create Event</span>
-                      </Link>
-
-                      <Link
-                        href="/manage-events"
-                        onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-emerald-500" />
-                        <span>Manage Events</span>
-                      </Link>
-
-                      <Link
-                        href="/joined-events"
-                        onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
-                      >
-                        <CalendarCheck className="w-4 h-4 text-emerald-500" />
-                        <span>Joined Events</span>
-                      </Link>
-                    </div>
-
-                    <div className="pt-1 border-t border-gray-100 dark:border-gray-800">
-                      <button
-                        type="button"
-                        onClick={handleSignOut}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition text-left"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="flex items-center gap-2.5">
