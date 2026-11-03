@@ -4,28 +4,14 @@ import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '@/lib/api';
+import { EventCard, EventCardSkeleton, EventData } from '@/components/EventCard';
 import {
   Search,
   Filter,
   Calendar,
-  MapPin,
-  User,
-  ArrowRight,
   Sparkles,
   RefreshCw,
 } from 'lucide-react';
-
-interface EventItem {
-  _id: string;
-  title: string;
-  description: string;
-  eventType: string;
-  thumbnail: string;
-  location: string;
-  eventDate: string;
-  organizerEmail: string;
-  organizerName: string;
-}
 
 const CATEGORIES = [
   'All',
@@ -44,7 +30,7 @@ function EventsContent() {
   const initialCategory = searchParams.get('category') || 'All';
   const initialSearch = searchParams.get('search') || '';
 
-  const [events, setEvents] = useState<EventItem[]>([]);
+  const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
@@ -59,7 +45,7 @@ function EventsContent() {
       }
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
-      const response = await fetchApi<{ success: boolean; count: number; data: EventItem[] }>(
+      const response = await fetchApi<{ success: boolean; count: number; data: EventData[] }>(
         `/events${queryString}`
       );
 
@@ -86,40 +72,6 @@ function EventsContent() {
   const handleReset = () => {
     setSearchTerm('');
     setSelectedCategory('All');
-  };
-
-  const getCategoryColor = (type: string) => {
-    switch (type) {
-      case 'Plantation':
-        return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
-      case 'Cleanup':
-        return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
-      case 'Healthcare':
-      case 'Blood Donation':
-        return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
-      case 'Winter Relief':
-        return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20';
-      case 'Education':
-        return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
-      case 'Food Drive':
-      case 'Donation':
-        return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20';
-      default:
-        return 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20';
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    try {
-      const d = new Date(dateString);
-      return d.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      });
-    } catch {
-      return dateString;
-    }
   };
 
   return (
@@ -210,18 +162,7 @@ function EventsContent() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((n) => (
-            <div
-              key={n}
-              className="h-96 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 animate-pulse overflow-hidden"
-            >
-              <div className="h-48 bg-gray-200 dark:bg-gray-800" />
-              <div className="p-5 space-y-3">
-                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4" />
-                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2 pt-2" />
-              </div>
-            </div>
+            <EventCardSkeleton key={n} />
           ))}
         </div>
       ) : events.length === 0 ? (
@@ -246,67 +187,7 @@ function EventsContent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => (
-            <div
-              key={event._id}
-              className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                  <img
-                    src={event.thumbnail}
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-md ${getCategoryColor(
-                        event.eventType
-                      )}`}
-                    >
-                      {event.eventType}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-5">
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-2">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>{formatDate(event.eventDate)}</span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                    {event.title}
-                  </h3>
-
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                    {event.description}
-                  </p>
-
-                  <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <div className="flex items-center gap-1.5 truncate max-w-[55%]">
-                      <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
-                      <span className="truncate">{event.location}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 truncate max-w-[40%]">
-                      <User className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
-                      <span className="truncate">{event.organizerName}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-5 pt-0">
-                <Link
-                  href={`/events/${event._id}`}
-                  className="w-full py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 group-hover:border-emerald-600 text-gray-700 dark:text-gray-200 group-hover:bg-emerald-600 group-hover:text-white font-medium text-sm transition-all flex items-center justify-center gap-2"
-                >
-                  <span>View Details</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </div>
+            <EventCard key={event._id} event={event} />
           ))}
         </div>
       )}
