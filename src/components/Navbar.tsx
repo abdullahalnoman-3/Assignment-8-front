@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   Calendar,
   ChevronDown,
+  Layers,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -126,6 +127,21 @@ export const Navbar: React.FC = () => {
               <Calendar className="w-4 h-4" />
               <span>Upcoming Events</span>
             </Link>
+
+            {/* All Events - Only visible when logged in */}
+            {user && (
+              <Link
+                href="/all-events"
+                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  isActive('/all-events')
+                    ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                <span>All Events</span>
+              </Link>
+            )}
           </div>
 
           {/* Right Side: Theme Toggle + Profile / Auth */}
@@ -191,6 +207,15 @@ export const Navbar: React.FC = () => {
                     </div>
 
                     <div className="py-1">
+                      <Link
+                        href="/all-events"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                      >
+                        <Layers className="w-4 h-4 text-emerald-500" />
+                        <span>All Events</span>
+                      </Link>
+
                       <Link
                         href="/create-event"
                         onClick={() => setProfileDropdownOpen(false)}
@@ -329,6 +354,15 @@ export const Navbar: React.FC = () => {
               </div>
 
               <div className="space-y-1">
+                <Link
+                  href="/all-events"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-emerald-600"
+                >
+                  <Layers className="w-4 h-4 text-emerald-500" />
+                  <span>All Events</span>
+                </Link>
+
                 <Link
                   href="/create-event"
                   onClick={() => setMobileMenuOpen(false)}
