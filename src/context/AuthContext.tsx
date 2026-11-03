@@ -17,8 +17,9 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, image?: string) => Promise<boolean>;
   googleLogin: (email: string, name: string, image?: string) => Promise<boolean>;
+  githubLogin: (email: string, name: string, image?: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -82,11 +83,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (name: string, email: string, password: string): Promise<boolean> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    image?: string
+  ): Promise<boolean> => {
     try {
       const res = await fetchApi('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, image }),
       });
       if (res.success) {
         localStorage.setItem('kindnet_token', res.token);
@@ -122,6 +128,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const githubLogin = async (email: string, name: string, image?: string) => {
+    try {
+      const res = await fetchApi('/auth/github', {
+        method: 'POST',
+        body: JSON.stringify({ email, name, image }),
+      });
+      if (res.success) {
+        localStorage.setItem('kindnet_token', res.token);
+        setToken(res.token);
+        setUser(res.user);
+        toast.success('GitHub sign-in successful!');
+        return true;
+      }
+      return false;
+    } catch (err: any) {
+      toast.error(err.message);
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('kindnet_token');
     setToken(null);
@@ -130,7 +156,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, googleLogin, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isLoading,
+        login,
+        register,
+        googleLogin,
+        githubLogin,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
