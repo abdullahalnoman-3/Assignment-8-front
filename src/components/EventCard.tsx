@@ -43,6 +43,8 @@ export const getCategoryBadgeStyle = (category: string) => {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const isPast = new Date(event.eventDate) < new Date();
+
   const formattedDate = new Date(event.eventDate).toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -70,6 +72,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               {event.eventType}
             </span>
           </div>
+
+          {/* Past Event Badge */}
+          {isPast && (
+            <div className="absolute top-3 right-3">
+              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-900/80 text-gray-200 border border-gray-700/60 backdrop-blur-md shadow-sm">
+                Past Event
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Event Body Info */}
