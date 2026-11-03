@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from 'next-themes';
 import Swal from 'sweetalert2';
@@ -23,6 +23,7 @@ import {
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
@@ -68,6 +69,7 @@ export const Navbar: React.FC = () => {
 
     if (result.isConfirmed) {
       logout();
+      router.push('/login');
       Swal.fire({
         title: 'Signed Out!',
         text: 'You have been logged out successfully.',

@@ -1,0 +1,330 @@
+'use client';
+
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { fetchApi } from '@/lib/api';
+import {
+  Search,
+  Filter,
+  Calendar,
+  MapPin,
+  User,
+  ArrowRight,
+  Sparkles,
+  RefreshCw,
+} from 'lucide-react';
+
+interface EventItem {
+  _id: string;
+  title: string;
+  description: string;
+  eventType: string;
+  thumbnail: string;
+  location: string;
+  eventDate: string;
+  organizerEmail: string;
+  organizerName: string;
+}
+
+const CATEGORIES = [
+  'All',
+  'Cleanup',
+  'Plantation',
+  'Donation',
+  'Education',
+  'Healthcare',
+  'Winter Relief',
+  'Food Drive',
+  'Blood Donation',
+];
+
+function EventsContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'All';
+  const initialSearch = searchParams.get('search') || '';
+
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearch);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+
+  const loadEvents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (searchTerm.trim()) params.append('search', searchTerm.trim());
+      if (selectedCategory && selectedCategory !== 'All') {
+        params.append('category', selectedCategory);
+      }
+
+      const queryString = params.toString() ? `?${params.toString()}` : '';
+      const response = await fetchApi<{ success: boolean; count: number; data: EventItem[] }>(
+        `/events${queryString}`
+      );
+
+      if (response && response.success) {
+        setEvents(response.data || []);
+      } else {
+        setEvents([]);
+      }
+    } catch (error) {
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, selectedCategory]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadEvents();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [loadEvents]);
+
+  const handleReset = () => {
+    setSearchTerm('');
+    setSelectedCategory('All');
+  };
+
+  const getCategoryColor = (type: string) => {
+    switch (type) {
+      case 'Plantation':
+        return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+      case 'Cleanup':
+        return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+      case 'Healthcare':
+      case 'Blood Donation':
+        return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+      case 'Winter Relief':
+        return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20';
+      case 'Education':
+        return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+      case 'Food Drive':
+      case 'Donation':
+        return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20';
+      default:
+        return 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const d = new Date(dateString);
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            Discover & Participate
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Upcoming Social Events
+          </h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            Browse through volunteer drives and community initiatives.
+          </p>
+        </div>
+
+        <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+          Showing <span className="text-emerald-600 dark:text-emerald-400 font-bold">{events.length}</span> active events
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-gray-900 p-4 sm:p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm mb-8 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div className="relative md:col-span-8">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <Search className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by event title, location, or keyword..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+            />
+          </div>
+
+          <div className="relative md:col-span-4 flex items-center gap-2">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <Filter className="w-4 h-4" />
+              </div>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full pl-10 pr-8 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm appearance-none cursor-pointer"
+              >
+                {CATEGORIES.map((category) => (
+                  <option key={category} value={category} className="dark:bg-gray-900">
+                    {category === 'All' ? 'All Categories' : category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {(searchTerm || selectedCategory !== 'All') && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition flex-shrink-0"
+                title="Reset filters"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+                selectedCategory === cat
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div
+              key={n}
+              className="h-96 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 animate-pulse overflow-hidden"
+            >
+              <div className="h-48 bg-gray-200 dark:bg-gray-800" />
+              <div className="p-5 space-y-3">
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2 pt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : events.length === 0 ? (
+        <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-8">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400">
+            <Calendar className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            No events found
+          </h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+            Try adjusting your search query or selecting a different category filter.
+          </p>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="mt-5 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition"
+          >
+            Clear Filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event) => (
+            <div
+              key={event._id}
+              className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+            >
+              <div>
+                <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                  <img
+                    src={event.thumbnail}
+                    alt={event.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-md ${getCategoryColor(
+                        event.eventType
+                      )}`}
+                    >
+                      {event.eventType}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-2">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{formatDate(event.eventDate)}</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                    {event.title}
+                  </h3>
+
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                    {event.description}
+                  </p>
+
+                  <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center gap-1.5 truncate max-w-[55%]">
+                      <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+                      <span className="truncate">{event.location}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 truncate max-w-[40%]">
+                      <User className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+                      <span className="truncate">{event.organizerName}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5 pt-0">
+                <Link
+                  href={`/events/${event._id}`}
+                  className="w-full py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 group-hover:border-emerald-600 text-gray-700 dark:text-gray-200 group-hover:bg-emerald-600 group-hover:text-white font-medium text-sm transition-all flex items-center justify-center gap-2"
+                >
+                  <span>View Details</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+          <div className="w-12 h-12 mx-auto rounded-full border-4 border-emerald-500/20 border-t-emerald-600 animate-spin" />
+        </div>
+      }
+    >
+      <EventsContent />
+    </Suspense>
+  );
+}
+
