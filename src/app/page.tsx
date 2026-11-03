@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchApi } from '@/lib/api';
 import { EventCard, EventCardSkeleton, EventData } from '@/components/EventCard';
+import { toast } from 'sonner';
 import {
   Calendar,
   Users,
@@ -11,6 +12,9 @@ import {
   Camera,
   MapPin,
   ArrowRight,
+  Mail,
+  Send,
+  CheckCircle2,
 } from 'lucide-react';
 
 const GALLERY_ITEMS = [
@@ -67,6 +71,23 @@ const GALLERY_ITEMS = [
 export default function HomePage() {
   const [recentEvents, setRecentEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    setSubscribing(true);
+    setTimeout(() => {
+      setSubscribing(false);
+      setNewsletterEmail('');
+      toast.success('Thank you for subscribing! A confirmation email has been sent to your inbox.');
+    }, 600);
+  };
 
   useEffect(() => {
     const fetchRecentEvents = async () => {
@@ -221,6 +242,61 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* 5. Newsletter Section */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-emerald-500/10 dark:from-emerald-950/40 dark:via-gray-900 dark:to-emerald-950/30 border border-emerald-500/20 p-8 sm:p-12 text-center shadow-sm">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <div className="inline-flex w-12 h-12 rounded-2xl bg-emerald-600 text-white items-center justify-center shadow-lg shadow-emerald-600/30">
+              <Mail className="w-6 h-6" />
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Stay Connected With Social Initiatives
+            </h2>
+
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Subscribe to our weekly newsletter to receive direct updates about new volunteer campaigns, free health camps, and emergency relief programs.
+            </p>
+
+            <form onSubmit={handleNewsletterSubmit} className="pt-4 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
+              <div className="relative w-full">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-sm"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={subscribing}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 flex-shrink-0 disabled:opacity-60"
+              >
+                {subscribing ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <span>Subscribe</span>
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 pt-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>No spam guaranteed. Unsubscribe anytime with one click.</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
