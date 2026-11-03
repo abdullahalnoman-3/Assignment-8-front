@@ -21,6 +21,8 @@ interface AuthContextType {
   googleLogin: (email: string, name: string, image?: string) => Promise<boolean>;
   githubLogin: (email: string, name: string, image?: string) => Promise<boolean>;
   logout: () => void;
+  updateProfile: (name: string, image?: string) => Promise<boolean>;
+  updateUser: (updatedData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -155,6 +157,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     toast.info('Logged out.');
   };
 
+  const updateUser = (updatedData: Partial<User>) => {
+    setUser((prev) => (prev ? { ...prev, ...updatedData } : null));
+  };
+
+  const updateProfile = async (name: string, image?: string): Promise<boolean> => {
+    try {
+      const res = await fetchApi<{ success: boolean; message?: string; user?: User }>('/auth/profile', {
+        method: 'PUT',
+        token: token || undefined,
+        body: JSON.stringify({ name, image }),
+      });
+
+      if (res.success && res.user) {
+        setUser(res.user);
+        toast.success(res.message || 'Profile updated successfully!');
+        return true;
+      }
+      return false;
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update profile.');
+      return false;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -166,6 +192,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         googleLogin,
         githubLogin,
         logout,
+        updateProfile,
+        updateUser,
       }}
     >
       {children}

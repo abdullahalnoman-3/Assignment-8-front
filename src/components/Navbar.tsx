@@ -19,6 +19,7 @@ import {
   Calendar,
   ChevronDown,
   Layers,
+  User as UserIcon,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -208,6 +209,15 @@ export const Navbar: React.FC = () => {
 
                     <div className="py-1">
                       <Link
+                        href="/profile"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+                      >
+                        <UserIcon className="w-4 h-4 text-emerald-500" />
+                        <span>My Profile</span>
+                      </Link>
+
+                      <Link
                         href="/all-events"
                         onClick={() => setProfileDropdownOpen(false)}
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
@@ -354,6 +364,15 @@ export const Navbar: React.FC = () => {
               </div>
 
               <div className="space-y-1">
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-emerald-600"
+                >
+                  <UserIcon className="w-4 h-4 text-emerald-500" />
+                  <span>My Profile</span>
+                </Link>
+
                 <Link
                   href="/all-events"
                   onClick={() => setMobileMenuOpen(false)}
