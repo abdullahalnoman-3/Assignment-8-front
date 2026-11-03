@@ -162,6 +162,7 @@ export default function EventDetailsPage() {
   }
 
   const isPast = new Date(event.eventDate) < new Date();
+  const isOrganizer = !!(user && user.email && event.organizerEmail && user.email.toLowerCase() === event.organizerEmail.toLowerCase());
   const eventDateObj = new Date(event.eventDate);
   const formattedDate = eventDateObj.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -291,7 +292,19 @@ export default function EventDetailsPage() {
             </div>
 
             <div className="space-y-3">
-              {isPast ? (
+              {isOrganizer ? (
+                <div className="space-y-2.5">
+                  <div className="w-full py-2.5 px-3 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 text-center text-xs font-semibold">
+                    You are the organizer of this event
+                  </div>
+                  <Link
+                    href="/manage-events"
+                    className="w-full py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+                  >
+                    <span>Manage / Edit Event</span>
+                  </Link>
+                </div>
+              ) : isPast ? (
                 <div className="w-full py-3.5 px-4 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-500 text-center text-sm font-semibold">
                   This Event Has Ended
                 </div>
