@@ -208,3 +208,4 @@ export const EventsExplorer: React.FC<EventsExplorerProps> = ({
     </div>
   );
 };
+

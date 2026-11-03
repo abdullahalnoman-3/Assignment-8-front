@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import { fetchApi } from '@/lib/api';
 import { EventCard, EventCardSkeleton, EventData } from '@/components/EventCard';
 import { toast } from 'sonner';
@@ -73,6 +74,7 @@ const GALLERY_ITEMS = [
 ];
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [recentEvents, setRecentEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -143,7 +145,7 @@ export default function HomePage() {
                 Browse Upcoming Events
               </Link>
               <Link
-                href="/register"
+                href={user ? '/events' : '/login?redirect=/events'}
                 className="px-6 py-3.5 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 font-semibold text-sm text-gray-800 dark:text-gray-200 transition flex items-center gap-2"
               >
                 <Users className="w-4 h-4" />
