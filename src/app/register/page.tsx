@@ -83,18 +83,15 @@ function RegisterForm() {
     }
   };
 
-  const handleGithubSignup = async () => {
+  const handleGithubSignup = () => {
     try {
       setIsGithubSubmitting(true);
-      const demoEmail = 'github.volunteer@example.com';
-      const demoName = 'GitHub Volunteer';
-      const demoImage =
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
-      const success = await githubLogin(demoEmail, demoName, demoImage);
-      if (success) {
-        router.push(redirect);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_redirect', redirect);
+        const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'Ov23licEIOKFv6zd82N0';
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email`;
       }
-    } finally {
+    } catch {
       setIsGithubSubmitting(false);
     }
   };

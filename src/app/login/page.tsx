@@ -27,6 +27,17 @@ function LoginForm() {
     }
   }, [user, authLoading, router, redirect]);
 
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      if (errorParam === 'github_cancelled') {
+        toast.info('GitHub sign-in was cancelled.');
+      } else {
+        toast.error(decodeURIComponent(errorParam));
+      }
+    }
+  }, [searchParams]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -60,17 +71,15 @@ function LoginForm() {
     }
   };
 
-  const handleGithubLogin = async () => {
+  const handleGithubLogin = () => {
     try {
       setIsGithubSubmitting(true);
-      const demoEmail = 'github.volunteer@example.com';
-      const demoName = 'GitHub Volunteer';
-      const demoImage = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
-      const success = await githubLogin(demoEmail, demoName, demoImage);
-      if (success) {
-        router.push(redirect);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_redirect', redirect);
+        const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'Ov23licEIOKFv6zd82N0';
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email`;
       }
-    } finally {
+    } catch {
       setIsGithubSubmitting(false);
     }
   };

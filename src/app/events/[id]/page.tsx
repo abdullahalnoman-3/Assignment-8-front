@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { AuthGuard } from '@/components/AuthGuard';
 import { useTheme } from 'next-themes';
 import { fetchApi } from '@/lib/api';
 import { getCategoryBadgeStyle, EventData } from '@/components/EventCard';
@@ -23,7 +24,7 @@ import {
   Clock,
 } from 'lucide-react';
 
-export default function EventDetailsPage() {
+function EventDetailsContent() {
   const params = useParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -367,6 +368,14 @@ export default function EventDetailsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EventDetailsPage() {
+  return (
+    <AuthGuard>
+      <EventDetailsContent />
+    </AuthGuard>
   );
 }
 

@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export interface EventData {
   _id: string;
@@ -43,6 +46,7 @@ export const getCategoryBadgeStyle = (category: string) => {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const { user } = useAuth();
   const isPast = new Date(event.eventDate) < new Date();
 
   const formattedDate = new Date(event.eventDate).toLocaleDateString('en-US', {
@@ -118,7 +122,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       {/* Action Button */}
       <div className="p-5 pt-0">
         <Link
-          href={`/events/${event._id}`}
+          href={user ? `/events/${event._id}` : `/login?redirect=/events/${event._id}`}
           className="w-full py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 font-medium text-sm transition-all flex items-center justify-center gap-2"
         >
           <span>View Event Details</span>

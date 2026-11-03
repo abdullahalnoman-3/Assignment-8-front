@@ -1,4 +1,4 @@
-# Social Events Platform (SEP)
+# Social Events Platform (SEP) — Frontend
 
 A modern, responsive full-stack Community Service & Volunteer Mobilization web application built with **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, **Node.js/Express**, and **MongoDB Atlas**.
 
@@ -6,8 +6,9 @@ A modern, responsive full-stack Community Service & Volunteer Mobilization web a
 
 ## 🌐 Live Website & Deployment
 
-- **Live Frontend URL:** [https://assignment-8-sep.vercel.app](https://assignment-8-sep.vercel.app) *(or `http://localhost:3000` in local development)*
-- **Live Backend API URL:** [https://assignment-8-backend-sep.onrender.com](https://assignment-8-backend-sep.onrender.com) *(or `http://localhost:5000/api` in local development)*
+- **Live Frontend URL:** [https://assignment.hmnoman.com](https://assignment.hmnoman.com)
+- **Live Backend API URL:** [https://assignmentserver.hmnoman.com/api](https://assignmentserver.hmnoman.com/api)
+- **Deployment Platform:** cPanel Phusion Passenger (Node.js 20.x) with custom `server.js`
 
 ---
 
@@ -28,13 +29,16 @@ A modern, responsive full-stack Community Service & Volunteer Mobilization web a
 5. **Chronological Volunteer Impact Timeline**:
    - Dedicated `Joined Events` dashboard sorting all initiatives the user has volunteered for by upcoming event date, displaying full details, registration badges, and location maps.
 
-6. **Interactive Dark & Light Theme Customization**:
+6. **Protected Event Details Route with Smart Redirects**:
+   - The Event Details page (`/events/[id]`) is strictly guarded by `AuthGuard`. Unauthenticated visitors attempting to view event details are seamlessly redirected to the Login page (`/login?redirect=/events/[id]`) and returned to the exact event upon sign-in.
+
+7. **Interactive Dark & Light Theme Customization**:
    - Full dark/light mode toggle powered by `next-themes` and Tailwind CSS, smoothly persisted across sessions and applied to all modal dialogues, tables, and form controls.
 
-7. **Zero Native Alerts & Accessible UX**:
+8. **Zero Native Alerts & Accessible UX**:
    - Replaced all default browser alerts and confirms with animated **SweetAlert2** dialogues and **Sonner** notifications for a polished, accessible user experience.
 
-8. **Profile View & Live Update Feature**:
+9. **Profile View & Live Update Feature**:
    - Users can update their display name and profile picture URL with quick avatar presets and instant real-time synchronization with the top navigation bar without page reloads.
 
 ---
@@ -50,7 +54,7 @@ A modern, responsive full-stack Community Service & Volunteer Mobilization web a
 - **Notifications & Dialogs:** `sweetalert2` and `sonner`
 
 ### Backend
-- **Runtime:** Node.js (v18+)
+- **Runtime:** Node.js (v20+)
 - **Framework:** Express.js
 - **Database:** MongoDB Atlas with Mongoose ODM
 - **Authentication:** JWT (JSON Web Tokens) with `bcryptjs` password hashing
@@ -72,9 +76,11 @@ npm install
 ```
 
 ### 3. Configure environment variables
-Create a `.env.local` file in the root directory:
+Create a `.env.local` or `.env` file in the root directory:
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=https://assignmentserver.hmnoman.com/api
+# Or for local backend:
+# NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
 ### 4. Run the development server
@@ -89,7 +95,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 - `/` — Public Home Page (Hero Banner, Features, Recent 6 Events Grid, Photo Gallery, Newsletter)
 - `/events` — Public Upcoming Events Explorer (Live search, Category filters, Event cards)
-- `/events/[id]` — Event Details & Volunteer Enrollment (Banner, Map link, Volunteer count, Join button)
+- `/events/[id]` — **Protected Route:** Single event details & volunteer enrollment (AuthGuard with automatic redirect)
 - `/all-events` — Searchable catalog of community events for registered users
 - `/create-event` — **Protected Route:** Create new social event with future date validation
 - `/manage-events` — **Protected Route:** Organizer table to edit and delete user's own events
@@ -101,4 +107,3 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📄 License
 This project was developed for educational purposes as part of Assignment 8.
-

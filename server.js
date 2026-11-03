@@ -3,10 +3,10 @@ const { parse } = require('url');
 const next = require('next');
 
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = '0.0.0.0';
-const port = parseInt(process.env.PORT, 10) || 3000;
-const app = next({ dev, hostname, port });
+const app = next({ dev, dir: __dirname });
 const handle = app.getRequestHandler();
+
+const port = process.env.PORT || 3000;
 
 app.prepare().then(() => {
   createServer(async (req, res) => {
@@ -18,8 +18,11 @@ app.prepare().then(() => {
       res.statusCode = 500;
       res.end('Internal Server Error');
     }
-  }).listen(port, () => {
+  }).listen(port, (err) => {
+    if (err) throw err;
     console.log(`> Frontend server ready on port ${port}`);
   });
+}).catch((err) => {
+  console.error('Failed to start Next.js app:', err);
+  process.exit(1);
 });
-
